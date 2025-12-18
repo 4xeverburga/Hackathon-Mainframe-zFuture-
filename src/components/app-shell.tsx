@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Activity, AlertTriangle, FileBarChart2, ServerCog } from "lucide-react";
+import { Activity, AlertTriangle, FileBarChart2, ServerCog, Users } from "lucide-react";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
@@ -10,7 +10,8 @@ import { cn } from "@/lib/cn";
 const nav = [
   { href: "/dashboard", label: "Dashboard", icon: Activity },
   { href: "/triage", label: "Triage", icon: AlertTriangle },
-  { href: "/reports", label: "Reportes", icon: FileBarChart2 },
+  { href: "/reports", label: "Reports", icon: FileBarChart2 },
+  { href: "/team", label: "Team", icon: Users },
   { href: "/settings", label: "Settings", icon: ServerCog },
 ];
 
@@ -44,10 +45,27 @@ export function AppShell({
               </div>
             </div>
 
-            <nav className="px-3">
-              <div className="px-2 pb-2 text-xs font-medium text-muted-foreground">
-                Navegación
+            {/* Make continuity more visible (not pinned to bottom) */}
+            <div className="px-4 pb-2">
+              <div className="rounded-lg border border-primary/30 bg-primary/10 p-3">
+                <div className="flex items-center justify-between">
+                  <div className="text-xs font-semibold">Continuity</div>
+                  <Badge variant="success">Stable</Badge>
+                </div>
+                <div className="mt-2 flex items-end justify-between">
+                  <div>
+                    <div className="text-xs text-muted-foreground">Risk</div>
+                    <div className="text-xl font-semibold tabular-nums">32</div>
+                  </div>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link href="/reports">View reports</Link>
+                  </Button>
+                </div>
               </div>
+            </div>
+
+            <nav className="px-3">
+              <div className="px-2 pb-2 text-xs font-medium text-muted-foreground">Navigation</div>
               <div className="space-y-1">
                 {nav.map((item) => {
                   const Icon = item.icon;
@@ -77,17 +95,11 @@ export function AppShell({
               </div>
             </nav>
 
-            <div className="mt-auto p-4">
-              <div className="rounded-lg border bg-card p-3">
-                <div className="text-xs font-medium">Continuidad</div>
-                <div className="mt-1 flex items-center justify-between">
-                  <div className="text-sm font-semibold">Riesgo: 32</div>
-                  <Badge variant="success">Stable</Badge>
-                </div>
-                <div className="mt-3 flex gap-2">
-                  <Button variant="outline" className="w-full" asChild>
-                    <Link href="/reports">Ver reportes</Link>
-                  </Button>
+            <div className="mt-auto px-4 pb-4">
+              <div className="rounded-lg border bg-card/40 p-3">
+                <div className="text-xs font-medium text-muted-foreground">Tips</div>
+                <div className="mt-1 text-xs text-muted-foreground">
+                  Use <span className="text-foreground">Triage</span> to act with evidence.
                 </div>
               </div>
             </div>
@@ -112,11 +124,9 @@ export function AppShell({
               </div>
 
               <div className="flex flex-1 flex-wrap items-center gap-2">
-                <div className="text-sm font-semibold">
-                  Continuidad Operacional
-                </div>
+                <div className="text-sm font-semibold">Operational Continuity</div>
                 <Badge variant="secondary">Core Payments</Badge>
-                <Badge variant="outline">Ventana: 1h</Badge>
+                <Badge variant="outline">Window: 1h</Badge>
               </div>
 
               <div className="flex items-center gap-2">

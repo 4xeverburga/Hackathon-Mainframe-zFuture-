@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @layer base {
-  :root {
+:root {
     --background: 0 0% 100%;
     --foreground: 240 10% 3.9%;
 
@@ -56,10 +56,10 @@
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
-  }
+}
 
   /* Tailwind v4: map our design tokens to utility-friendly names (bg-background, text-foreground, etc.) */
-  @theme inline {
+@theme inline {
     --color-background: hsl(var(--background));
     --color-foreground: hsl(var(--foreground));
 
@@ -97,9 +97,9 @@
   html,
   body {
     height: 100%;
-  }
+}
 
-  body {
+body {
     @apply bg-background text-foreground antialiased;
   }
 }

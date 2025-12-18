@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Interbank • Ops Command Center (IBM Z)",
   description:
-    "Continuidad operacional en IBM Z con alertas, métricas, logs e inteligencia para prevenir impactos.",
+    "Operational continuity on IBM Z with alerts, metrics, logs, and intelligence to prevent impact.",
   icons: {
     icon: [
       {
@@ -39,7 +39,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} min-h-dvh font-sans antialiased`}
       >

@@ -20,13 +20,13 @@ export function severityToBadgeVariant(sev: Severity) {
 export function severityLabel(sev: Severity) {
   switch (sev) {
     case "critical":
-      return "Crítico";
+      return "Critical";
     case "high":
-      return "Alto";
+      return "High";
     case "medium":
-      return "Medio";
+      return "Medium";
     case "low":
-      return "Bajo";
+      return "Low";
   }
 }
 

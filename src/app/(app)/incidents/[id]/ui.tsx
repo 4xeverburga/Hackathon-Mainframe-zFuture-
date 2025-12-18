@@ -38,11 +38,11 @@ export function IncidentClient({ id }: { id: string }) {
       })
       .catch((e: unknown) => {
         if (!mounted) return;
-        const msg = e instanceof Error ? e.message : "No se pudo cargar el incidente.";
+        const msg = e instanceof Error ? e.message : "Failed to load incident.";
         setLoadError(msg);
         setFeedback({
           open: true,
-          title: "No se pudo cargar el incidente",
+          title: "Failed to load incident",
           description: msg,
         });
       })
@@ -61,13 +61,13 @@ export function IncidentClient({ id }: { id: string }) {
           <div className="text-xs font-medium text-muted-foreground">War room</div>
           <div className="mt-1 flex items-center gap-2">
             <div className="text-2xl font-semibold tracking-tight">
-              {loading ? "Cargando incidente…" : `Incidente ${incident?.id ?? id}`}
+              {loading ? "Loading incident…" : `Incident ${incident?.id ?? id}`}
             </div>
             <Badge variant={risk.variant}>{risk.label}</Badge>
             {incident ? <Badge variant="outline">{incident.status}</Badge> : null}
           </div>
           <div className="mt-2 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-            <span>Servicio:</span>
+            <span>Service:</span>
             <Badge variant="secondary">{incident?.service ?? "—"}</Badge>
             <span>ETA:</span>
             <Badge variant="outline">{incident?.etaMinutes ?? "—"}m</Badge>
@@ -82,20 +82,20 @@ export function IncidentClient({ id }: { id: string }) {
             onClick={async () => {
               const res = await api.itsmTicket({
                 incidentId: id,
-                title: incident?.summary ?? "Incidente",
+                title: incident?.summary ?? "Incident",
                 service: incident?.service,
               });
               setItsmTicket(res.ticketId);
               setFeedback({
                 open: true,
-                title: "Ticket ITSM creado",
+                title: "ITSM ticket created",
                 description: `Ticket: ${res.ticketId}`,
               });
             }}
             type="button"
           >
             <Ticket className="mr-2" />
-            Crear ticket ITSM
+            Create ITSM ticket
           </Button>
           <Button
             variant="outline"
@@ -111,37 +111,38 @@ export function IncidentClient({ id }: { id: string }) {
                 .then(() =>
                   setFeedback({
                     open: true,
-                    title: "Evidencia exportada",
-                    description: "Se copió un JSON al portapapeles (para pegar en un ticket o chat).",
+                    title: "Evidence exported",
+                    description:
+                      "A JSON payload was copied to the clipboard (paste into a ticket or chat).",
                   }),
                 )
                 .catch(() =>
                   setFeedback({
                     open: true,
-                    title: "No se pudo exportar evidencia",
+                    title: "Failed to export evidence",
                     description:
-                      "Tu navegador bloqueó el portapapeles. Prueba desde HTTPS o copia manualmente desde la consola.",
+                      "Your browser blocked clipboard access. Try HTTPS or copy manually.",
                   }),
                 );
             }}
             type="button"
           >
             <Download className="mr-2" />
-            Exportar evidencia
+            Export evidence
           </Button>
           <Button
             onClick={async () => {
               await api.incidentAction(id, { action: "mark_mitigated", at: new Date().toISOString() });
               setFeedback({
                 open: true,
-                title: "Estado actualizado",
-                description: "Marcado como mitigado (demo).",
+                title: "Status updated",
+                description: "Marked as mitigated (demo).",
               });
             }}
             type="button"
           >
             <Flag className="mr-2" />
-            Marcar mitigado
+            Mark mitigated
           </Button>
         </div>
       </div>
@@ -150,7 +151,7 @@ export function IncidentClient({ id }: { id: string }) {
         <Card>
           <CardContent className="flex flex-wrap items-center justify-between gap-2 p-4">
             <div className="text-sm">
-              Ticket ITSM creado: <span className="font-semibold">{itsmTicket}</span>
+              ITSM ticket created: <span className="font-semibold">{itsmTicket}</span>
             </div>
             <Button
               variant="outline"
@@ -158,13 +159,13 @@ export function IncidentClient({ id }: { id: string }) {
               onClick={() =>
                 setFeedback({
                   open: true,
-                  title: "Abrir ITSM (demo)",
-                  description: "Aquí abrirías el ticket en ServiceNow/Jira/Remedy, etc.",
+                  title: "Open ITSM (demo)",
+                  description: "This would open the ticket in ServiceNow/Jira/Remedy, etc.",
                 })
               }
               type="button"
             >
-              Abrir <ExternalLink className="ml-1" />
+              Open <ExternalLink className="ml-1" />
             </Button>
           </CardContent>
         </Card>
@@ -172,17 +173,17 @@ export function IncidentClient({ id }: { id: string }) {
 
       <Tabs defaultValue="resumen">
         <TabsList>
-          <TabsTrigger value="resumen">Resumen</TabsTrigger>
-          <TabsTrigger value="evidencia">Evidencia</TabsTrigger>
-          <TabsTrigger value="causa">Causa probable</TabsTrigger>
-          <TabsTrigger value="recomendaciones">Recomendaciones</TabsTrigger>
-          <TabsTrigger value="verificacion">Verificación</TabsTrigger>
+          <TabsTrigger value="resumen">Summary</TabsTrigger>
+          <TabsTrigger value="evidencia">Evidence</TabsTrigger>
+          <TabsTrigger value="causa">Probable cause</TabsTrigger>
+          <TabsTrigger value="recomendaciones">Recommendations</TabsTrigger>
+          <TabsTrigger value="verificacion">Verification</TabsTrigger>
         </TabsList>
 
         <TabsContent value="resumen">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-muted-foreground">Qué pasa</CardTitle>
+              <CardTitle className="text-muted-foreground">What is happening</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {loading || !incident ? (
@@ -194,7 +195,7 @@ export function IncidentClient({ id }: { id: string }) {
                 <>
                   <div className="rounded-lg border bg-muted/40 p-3 text-sm">
                     <div className="flex items-center gap-2 font-medium">
-                      <Siren className="size-4" /> Impacto/Alcance
+                      <Siren className="size-4" /> Impact / scope
                     </div>
                     <div className="mt-1 text-muted-foreground">{incident.summary}</div>
                   </div>
@@ -218,7 +219,7 @@ export function IncidentClient({ id }: { id: string }) {
           <Card>
             <CardHeader className="pb-3">
               <CardTitle className="text-muted-foreground">
-                Timeline correlacionado (alertas + logs + métricas)
+                Correlated timeline (alerts + logs + metrics)
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -234,7 +235,7 @@ export function IncidentClient({ id }: { id: string }) {
         <TabsContent value="causa">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-muted-foreground">Causa probable</CardTitle>
+              <CardTitle className="text-muted-foreground">Probable cause</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {loading || !incident ? (
@@ -268,7 +269,7 @@ export function IncidentClient({ id }: { id: string }) {
         <TabsContent value="recomendaciones">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-muted-foreground">Acciones priorizadas</CardTitle>
+              <CardTitle className="text-muted-foreground">Prioritized actions</CardTitle>
             </CardHeader>
             <CardContent>
               {loading || !incident ? (
@@ -284,7 +285,7 @@ export function IncidentClient({ id }: { id: string }) {
                     });
                     setFeedback({
                       open: true,
-                      title: "Acción registrada",
+                      title: "Action logged",
                       description: rec.title,
                     });
                   }}
@@ -297,20 +298,20 @@ export function IncidentClient({ id }: { id: string }) {
         <TabsContent value="verificacion">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-muted-foreground">Verificación</CardTitle>
+              <CardTitle className="text-muted-foreground">Verification</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="rounded-lg border bg-muted/40 p-3 text-sm">
-                <div className="font-medium">Checklist rápido (demo)</div>
+                <div className="font-medium">Quick checklist (demo)</div>
                 <ul className="mt-2 list-disc space-y-1 pl-5 text-muted-foreground">
-                  <li>Errores de interfaz vuelven a baseline</li>
-                  <li>CPU retorna a nivel esperado</li>
-                  <li>Latencia p95 se estabiliza</li>
-                  <li>Sin nuevas alertas deduplicadas</li>
+                  <li>Interface errors return to baseline</li>
+                  <li>CPU returns to expected level</li>
+                  <li>p95 latency stabilizes</li>
+                  <li>No new deduplicated alerts</li>
                 </ul>
               </div>
               <div className="text-xs text-muted-foreground">
-                (Para hackathon) aquí podrías mostrar mini-gráficas antes/después por driver.
+                (Hackathon) You can show before/after mini-charts per driver here.
               </div>
             </CardContent>
           </Card>
@@ -324,7 +325,7 @@ export function IncidentClient({ id }: { id: string }) {
 
       {loadError ? (
         <div className="rounded-lg border bg-muted/30 p-4">
-          <div className="text-sm font-semibold">Error cargando incidente</div>
+          <div className="text-sm font-semibold">Error loading incident</div>
           <div className="mt-1 text-sm text-muted-foreground">{loadError}</div>
           <div className="mt-3">
             <Button
@@ -343,7 +344,7 @@ export function IncidentClient({ id }: { id: string }) {
               }}
               type="button"
             >
-              Reintentar
+              Retry
             </Button>
           </div>
         </div>

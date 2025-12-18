@@ -134,12 +134,12 @@ export function DashboardClient() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <label className="text-xs text-muted-foreground">Servicio</label>
+          <label className="text-xs text-muted-foreground">Service</label>
           <select
             className="h-9 rounded-md border bg-background px-3 text-sm"
             value={service}
             onChange={(e) => setService(e.target.value)}
-            aria-label="Seleccionar servicio"
+            aria-label="Select service"
           >
             {SERVICES.map((s) => (
               <option key={s} value={s}>
@@ -148,12 +148,12 @@ export function DashboardClient() {
             ))}
           </select>
 
-          <label className="ml-2 text-xs text-muted-foreground">Ventana</label>
+          <label className="ml-2 text-xs text-muted-foreground">Window</label>
           <select
             className="h-9 rounded-md border bg-background px-3 text-sm"
             value={window}
             onChange={(e) => setWindow(e.target.value as (typeof WINDOWS)[number])}
-            aria-label="Seleccionar ventana de tiempo"
+            aria-label="Select time window"
           >
             {WINDOWS.map((w) => (
               <option key={w} value={w}>
@@ -163,7 +163,7 @@ export function DashboardClient() {
           </select>
 
           <Button variant="outline" asChild className="ml-2">
-            <Link href="/triage">Ir a triage</Link>
+            <Link href="/triage">Go to triage</Link>
           </Button>
         </div>
       </div>
@@ -189,21 +189,21 @@ export function DashboardClient() {
       {/* Row 1: Top tiles */}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
         <Tile
-          title="IBM Z — observabilidad"
+          title="IBM Z — Observability"
           value="LPAR Z-CORE-01"
-          sub="z/OS • Telemetría consolidada"
+          sub="z/OS • Consolidated telemetry"
           tone="blue"
         />
 
         <Tile
-          title="Capacidad"
+          title="Capacity"
           value="CPU 2 • RAM 16 GB"
           sub="Disk 120 GB"
           tone="amber"
         />
 
         <Tile
-          title="Continuidad"
+          title="Continuity"
           value={
             loading ? (
               <Skeleton className="h-7 w-28" />
@@ -226,7 +226,7 @@ export function DashboardClient() {
         />
 
         <Tile
-          title="Señales del sistema"
+          title="System signals"
           value={
             <span className="tabular-nums">
               Up 5w • Free 30%

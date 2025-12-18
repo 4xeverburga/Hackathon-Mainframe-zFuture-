@@ -19,7 +19,7 @@ export type FeedbackDialogState = {
 export function FeedbackDialog({
   state,
   onOpenChange,
-  actionLabel = "Listo",
+  actionLabel = "OK",
 }: {
   state: FeedbackDialogState;
   onOpenChange: (open: boolean) => void;
