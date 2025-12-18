@@ -17,6 +17,20 @@ export const metadata: Metadata = {
   title: "Interbank • Ops Command Center (IBM Z)",
   description:
     "Continuidad operacional en IBM Z con alertas, métricas, logs e inteligencia para prevenir impactos.",
+  icons: {
+    icon: [
+      {
+        url: "/images%20%2810%29.png",
+        type: "image/png",
+      },
+    ],
+    apple: [
+      {
+        url: "/images%20%2810%29.png",
+        type: "image/png",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({

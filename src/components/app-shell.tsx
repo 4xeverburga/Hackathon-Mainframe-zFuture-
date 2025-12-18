@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Activity, AlertTriangle, FileBarChart2, ServerCog } from "lucide-react";
 
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -26,8 +27,14 @@ export function AppShell({
         <aside className="hidden border-r bg-card/30 md:block">
           <div className="flex h-dvh flex-col">
             <div className="flex items-center gap-3 px-5 py-5">
-              <div className="grid size-10 place-items-center rounded-xl bg-primary/15 text-primary">
-                <Activity className="size-5" />
+              <div className="grid size-10 place-items-center overflow-hidden rounded-xl bg-white/5 ring-1 ring-white/10">
+                <Image
+                  src="/images%20%2810%29.png"
+                  alt="Interbank"
+                  width={40}
+                  height={40}
+                  priority
+                />
               </div>
               <div className="leading-tight">
                 <div className="text-sm font-semibold">Ops Command Center</div>
@@ -91,7 +98,17 @@ export function AppShell({
           <header className="sticky top-0 z-10 border-b bg-background/70 backdrop-blur">
             <div className="mx-auto flex max-w-[1400px] items-center gap-3 px-4 py-3 md:px-6">
               <div className="md:hidden">
-                <Badge variant="outline">Ops</Badge>
+                <div className="flex items-center gap-2">
+                  <div className="grid size-7 place-items-center overflow-hidden rounded-md bg-white/5 ring-1 ring-white/10">
+                    <Image
+                      src="/images%20%2810%29.png"
+                      alt="Interbank"
+                      width={28}
+                      height={28}
+                    />
+                  </div>
+                  <Badge variant="outline">Ops</Badge>
+                </div>
               </div>
 
               <div className="flex flex-1 flex-wrap items-center gap-2">

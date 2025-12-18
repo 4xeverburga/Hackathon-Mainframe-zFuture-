@@ -22,7 +22,7 @@ export default function SettingsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-muted-foreground">
-            Zabbix, Syslog/SMF, métricas z/OS, DB, red. En producción aquí se
+            Monitoreo (alerts), Syslog/SMF, métricas z/OS, DB, red. En producción aquí se
             configuran credenciales y pipelines.
           </CardContent>
         </Card>

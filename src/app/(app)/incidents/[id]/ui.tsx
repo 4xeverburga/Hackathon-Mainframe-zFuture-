@@ -19,6 +19,7 @@ export function IncidentClient({ id }: { id: string }) {
   const [incident, setIncident] = React.useState<Incident | null>(null);
   const [loading, setLoading] = React.useState(true);
   const [itsmTicket, setItsmTicket] = React.useState<string | null>(null);
+  const [loadError, setLoadError] = React.useState<string | null>(null);
   const [feedback, setFeedback] = React.useState<FeedbackDialogState>({
     open: false,
     title: "",
@@ -28,9 +29,23 @@ export function IncidentClient({ id }: { id: string }) {
   React.useEffect(() => {
     let mounted = true;
     setLoading(true);
+    setLoadError(null);
     api
       .incident(id)
-      .then((d) => mounted && setIncident(d))
+      .then((d) => {
+        if (!mounted) return;
+        setIncident(d);
+      })
+      .catch((e: unknown) => {
+        if (!mounted) return;
+        const msg = e instanceof Error ? e.message : "No se pudo cargar el incidente.";
+        setLoadError(msg);
+        setFeedback({
+          open: true,
+          title: "No se pudo cargar el incidente",
+          description: msg,
+        });
+      })
       .finally(() => mounted && setLoading(false));
     return () => {
       mounted = false;
@@ -306,6 +321,33 @@ export function IncidentClient({ id }: { id: string }) {
         state={feedback}
         onOpenChange={(open) => setFeedback((s) => ({ ...s, open }))}
       />
+
+      {loadError ? (
+        <div className="rounded-lg border bg-muted/30 p-4">
+          <div className="text-sm font-semibold">Error cargando incidente</div>
+          <div className="mt-1 text-sm text-muted-foreground">{loadError}</div>
+          <div className="mt-3">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setLoading(true);
+                setIncident(null);
+                setLoadError(null);
+                api
+                  .incident(id)
+                  .then((d) => setIncident(d))
+                  .catch((e: unknown) =>
+                    setLoadError(e instanceof Error ? e.message : "Error"),
+                  )
+                  .finally(() => setLoading(false));
+              }}
+              type="button"
+            >
+              Reintentar
+            </Button>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

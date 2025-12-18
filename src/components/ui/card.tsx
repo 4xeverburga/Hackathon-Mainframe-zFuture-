@@ -51,7 +51,7 @@ export function CardContent({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  return <div className={cn("p-4 pt-0", className)} {...props} />;
+  return <div className={cn("min-w-0 p-4 pt-0", className)} {...props} />;
 }
 
 export function CardFooter({
