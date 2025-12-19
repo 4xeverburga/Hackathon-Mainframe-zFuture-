@@ -26,7 +26,15 @@ export function CpuMultilineChart({ data }: { data: ZPoint[] }) {
           />
           <YAxis tick={{ fontSize: 11 }} width={34} domain={[0, 60]} />
           <Tooltip
-            formatter={(v: number, name: string) => [v.toFixed(1), name]}
+            formatter={(value, name) => {
+              const v =
+                typeof value === "number"
+                  ? value.toFixed(1)
+                  : value == null
+                    ? "—"
+                    : String(value);
+              return [v, String(name)];
+            }}
             labelFormatter={(l) => String(l).replace("T", " ").slice(0, 16)}
           />
           <Line type="monotone" dataKey="cpuUser" stroke="#f2c94c" strokeWidth={2} dot={false} name="CPU user" />

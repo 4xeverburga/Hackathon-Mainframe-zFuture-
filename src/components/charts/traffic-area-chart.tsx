@@ -26,7 +26,15 @@ export function TrafficAreaChart({ data }: { data: ZPoint[] }) {
           />
           <YAxis tick={{ fontSize: 11 }} width={34} />
           <Tooltip
-            formatter={(v: number, name: string) => [`${v.toFixed(1)} MB/s`, name]}
+            formatter={(value, name) => {
+              const v =
+                typeof value === "number"
+                  ? `${value.toFixed(1)} MB/s`
+                  : value == null
+                    ? "—"
+                    : String(value);
+              return [v, String(name)];
+            }}
             labelFormatter={(l) => String(l).replace("T", " ").slice(0, 16)}
           />
           <Area

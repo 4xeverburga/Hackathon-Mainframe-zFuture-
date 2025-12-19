@@ -1,4 +1,24 @@
-export type ZPoint = { t: string } & Record<string, number>;
+// Explicit metric shape used across charts + dashboard.
+// Keeping metrics typed as numbers avoids unions like `string | number` leaking into UI code.
+export type ZPoint = {
+  t: string;
+  cpuUser: number;
+  cpuSystem: number;
+  cpuIowait: number;
+  cpuSteal: number;
+  procTotal: number;
+  procMonitoring: number;
+  procMySQL: number;
+  procOther: number;
+  trafficIn: number;
+  trafficOut: number;
+  valuesProcessed: number;
+  queue: number;
+  mysqlSelect: number;
+  mysqlInsert: number;
+  mysqlUpdate: number;
+  mysqlDelete: number;
+};
 
 function iso(ms: number) {
   return new Date(ms).toISOString();

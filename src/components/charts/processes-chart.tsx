@@ -26,7 +26,15 @@ export function ProcessesChart({ data }: { data: ZPoint[] }) {
           />
           <YAxis tick={{ fontSize: 11 }} width={34} />
           <Tooltip
-            formatter={(v: number, name: string) => [v.toFixed(0), name]}
+            formatter={(value, name) => {
+              const v =
+                typeof value === "number"
+                  ? value.toFixed(0)
+                  : value == null
+                    ? "—"
+                    : String(value);
+              return [v, String(name)];
+            }}
             labelFormatter={(l) => String(l).replace("T", " ").slice(0, 16)}
           />
           <Line type="monotone" dataKey="procTotal" stroke="#f2c94c" strokeWidth={2} dot={false} name="Total" />

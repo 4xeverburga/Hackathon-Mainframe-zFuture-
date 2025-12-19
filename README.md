@@ -38,8 +38,11 @@ Abre `http://localhost:3000`.
 ## Deploy en IBM Cloud
 
 Este proyecto es **Next.js** y está preparado para deploy en **IBM Cloud Code Engine** vía container:
-- `next.config.ts` usa `output: "standalone"`
+- `next.config.ts` soporta `output: "standalone"` (se activa con `NEXT_OUTPUT=standalone`)
 - `Dockerfile` expone `PORT=8080` (recomendado para Code Engine)
+
+> Nota (Windows): si activas `output: "standalone"` localmente, Next puede intentar crear **symlinks** y fallar con `EPERM`.
+> Recomendado: valida el build con `docker build ...` (en Linux dentro del container), o habilita Developer Mode / ejecuta con permisos.
 
 ### Opción A (recomendada): IBM Cloud Code Engine (Container)
 
