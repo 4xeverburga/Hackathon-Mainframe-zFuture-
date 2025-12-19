@@ -540,7 +540,7 @@ export function AssistantClient() {
       id: uid(),
       role: "assistant",
       at: nowIso(),
-      text: "watsonx Assistant for Z (demo)\nAsk me about your z/OS environment, alerts, and incidents.",
+      text: "watsonx Assistant for Z\nAsk me about your z/OS environment, alerts, and incidents.",
       attachments: [],
     },
   ]);
@@ -589,7 +589,7 @@ export function AssistantClient() {
         <div>
           <div className="text-xs font-medium text-muted-foreground">Agentic AI</div>
           <div className="mt-1 flex items-center gap-2">
-            <div className="text-2xl font-semibold tracking-tight">watsonx Assistant (demo)</div>
+            <div className="text-2xl font-semibold tracking-tight">watsonx Assistant</div>
             <Badge variant="secondary" className="gap-1">
               <Sparkles className="size-3" /> AI
             </Badge>
@@ -668,7 +668,7 @@ export function AssistantClient() {
                 </div>
 
                 <div className="text-center text-[11px] text-muted-foreground">
-                  Enter to send • Shift+Enter for newline • Demo flow based on the watsonx Assistant for Z video
+                  Enter to send • Shift+Enter for newline • Flow based on the watsonx Assistant for Z video
                 </div>
               </div>
             </div>
