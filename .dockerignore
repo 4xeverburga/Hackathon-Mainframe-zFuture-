@@ -1,0 +1,13 @@
+node_modules
+.next
+.git
+.turbo
+.vercel
+coverage
+dist
+out
+*.log
+.DS_Store
+README.md
+
+

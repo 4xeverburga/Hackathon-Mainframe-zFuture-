@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Needed for container deploys (smaller image + faster cold start).
+  output: "standalone",
 };
 
 export default nextConfig;
