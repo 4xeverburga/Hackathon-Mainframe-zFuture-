@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Activity, AlertTriangle, FileBarChart2, ServerCog, Users } from "lucide-react";
+import { Activity, AlertTriangle, Bot, FileBarChart2, ServerCog, Users } from "lucide-react";
 
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +9,7 @@ import { cn } from "@/lib/cn";
 
 const nav = [
   { href: "/dashboard", label: "Dashboard", icon: Activity },
+  { href: "/assistant", label: "Assistant", icon: Bot },
   { href: "/triage", label: "Triage", icon: AlertTriangle },
   { href: "/reports", label: "Reports", icon: FileBarChart2 },
   { href: "/team", label: "Team", icon: Users },
