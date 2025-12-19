@@ -17,11 +17,12 @@ function MemberCard({ name }: { name: string }) {
         <div className="grid aspect-[4/3] w-full place-items-center overflow-hidden rounded-2xl bg-black/20 ring-1 ring-white/10">
           {/* Placeholder similar to the reference; you can replace with real photos later */}
           <Image
-            src="/images%20%2810%29.png"
+            src="/images (10).png"
             alt={name}
             width={96}
             height={96}
             className="opacity-90"
+            unoptimized
           />
         </div>
         <div className="mt-4 rounded-2xl bg-background/90 p-4 ring-1 ring-black/5 dark:bg-black/30 dark:ring-white/10">

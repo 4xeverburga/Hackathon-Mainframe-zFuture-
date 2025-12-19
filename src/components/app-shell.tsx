@@ -31,11 +31,12 @@ export function AppShell({
             <div className="flex items-center gap-3 px-5 py-5">
               <div className="grid size-10 place-items-center overflow-hidden rounded-xl bg-white/5 ring-1 ring-white/10">
                 <Image
-                  src="/images%20%2810%29.png"
+                  src="/images (10).png"
                   alt="Interbank"
                   width={40}
                   height={40}
                   priority
+                  unoptimized
                 />
               </div>
               <div className="leading-tight">
@@ -114,10 +115,11 @@ export function AppShell({
                 <div className="flex items-center gap-2">
                   <div className="grid size-7 place-items-center overflow-hidden rounded-md bg-white/5 ring-1 ring-white/10">
                     <Image
-                      src="/images%20%2810%29.png"
+                      src="/images (10).png"
                       alt="Interbank"
                       width={28}
                       height={28}
+                      unoptimized
                     />
                   </div>
                   <Badge variant="outline">Ops</Badge>
