@@ -5,7 +5,6 @@ import {
   ArrowUpRight,
   Bot,
   CheckCircle2,
-  CircleHelp,
   CornerDownLeft,
   Sparkles,
 } from "lucide-react";
@@ -72,6 +71,17 @@ function nowIso() {
   return new Date().toISOString();
 }
 
+function formatChatTime(iso: string) {
+  if (!iso) return "";
+  // Deterministic format to avoid hydration mismatches (no locale differences, fixed timezone).
+  return new Intl.DateTimeFormat("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+    timeZone: "UTC",
+  }).format(new Date(iso));
+}
+
 function normalize(s: string) {
   return s.trim().toLowerCase();
 }
@@ -125,9 +135,9 @@ const DEMO_HISTORICAL_INCIDENTS: IncidentRow[] = [
     priority: "5",
     status: "Resolved",
     description:
-      "An abnormal transaction rate has been detected on CICS Region CICS5AJB. This issue may indicate potential performance degradation or an underlying system anomaly.",
+      "Se detectó un abnormal transaction rate en CICS Region CICS5AJB. Este issue puede indicar una posible degradación de performance o una anomalía subyacente del sistema.",
     resolution:
-      "Transaction routing was adjusted and an additional CICS region was temporarily started, improving response times (90% under 0.5s).",
+      "Se ajustó el transaction routing y se inició temporalmente un CICS region adicional, mejorando los response times (90% por debajo de 0.5s).",
   },
   {
     id: "INC0010291",
@@ -135,7 +145,7 @@ const DEMO_HISTORICAL_INCIDENTS: IncidentRow[] = [
     priority: "1",
     status: "New",
     description:
-      "The service class WLMAISC did not meet its goal, with a performance index of 1.2. The execution velocity goal was 70%, but only 58.08% was achieved.",
+      "La Service class WLMAISC no cumplió su goal, con un performance index de 1.2. El execution velocity goal era 70%, pero solo se logró 58.08%.",
     resolution: "",
   },
   {
@@ -144,9 +154,9 @@ const DEMO_HISTORICAL_INCIDENTS: IncidentRow[] = [
     priority: "1",
     status: "Resolved",
     description:
-      "Percentile response time goal of 90% under .5s but only 40% achieved in the CICS region.",
+      "Percentile response time goal de 90% por debajo de .5s, pero solo se logró 40% en el CICS region.",
     resolution:
-      "A temporary additional CICS region was started to distribute load; further tuning of WLM and QR-TCB usage may be required.",
+      "Se inició temporalmente un CICS region adicional para distribuir carga; puede requerirse tuning adicional de WLM y uso de QR-TCB.",
   },
   {
     id: "INC0010276",
@@ -154,17 +164,27 @@ const DEMO_HISTORICAL_INCIDENTS: IncidentRow[] = [
     priority: "1",
     status: "New",
     description:
-      "The service class WLMAISC did not meet its goal, with a performance index of 1.2. The execution velocity goal was 70%, but only 58.08% was achieved.",
+      "La Service class WLMAISC no cumplió su goal, con un performance index de 1.2. El execution velocity goal era 70%, pero solo se logró 58.08%.",
     resolution: "",
+  },
+];
+
+const INITIAL_MESSAGES: ChatMessage[] = [
+  {
+    id: "assistant-welcome",
+    role: "assistant",
+    at: "",
+    text: "watsonx Assistant for Z\nPregúntame sobre tu entorno z/OS, alerts e incidents.",
+    attachments: [],
   },
 ];
 
 function suggestedPrompts() {
   return [
-    "Show me the topology of systems in my zOS environment",
-    "Get me critical events between March 05 2025 and March 06 2025.",
-    "Get me summary for CICST11A",
-    "Are there any historical incidents related to transaction rate issue for CICS?",
+    "Muéstrame la topology de systems en mi entorno z/OS",
+    "Dame los critical events entre March 05 2025 y March 06 2025.",
+    "Dame el summary para CICST11A",
+    "¿Hay historical incidents relacionados con transaction rate issue para CICS?",
   ];
 }
 
@@ -180,11 +200,11 @@ function buildAssistantReply(inputRaw: string, history: ChatMessage[]) {
   // Confirmation flow for incident creation.
   if (hasFormOpen && !alreadyCreated && (input === "yes" || input === "y" || input === "si" || input === "sí")) {
     return {
-      text: "Incident Created Successfully.\n\nSummary: The incident has been created and assigned. You can open it from the link below.",
+      text: "Incident creado correctamente.\n\nResumen: El Incident fue creado y asignado. Puedes abrirlo desde el enlace de abajo.",
       attachments: [
         {
           kind: "incident_created",
-          title: "Incident created",
+          title: "Incident creado",
           incidentId: "INC0010306",
           assignedTo: "***********",
         } satisfies AssistantAttachment,
@@ -194,7 +214,7 @@ function buildAssistantReply(inputRaw: string, history: ChatMessage[]) {
 
   if (hasFormOpen && !alreadyCreated && (input === "no" || input === "n")) {
     return {
-      text: "Okay — I won’t create an incident. Want me to propose mitigation steps or collect more evidence?",
+      text: "Listo — no crearé el Incident. ¿Quieres que proponga pasos de mitigación o que recolecte más evidencia?",
       attachments: [],
     };
   }
@@ -202,13 +222,13 @@ function buildAssistantReply(inputRaw: string, history: ChatMessage[]) {
   // Topology
   if (hasAny(input, ["topology", "topología", "topologia", "lpar", "systems in my zos", "z/os", "zos"])) {
     return {
-      text: `System Name: ${DEMO_SYSTEM}\n\nSummary\nThe topology data retrieved provides insights into the system's LPAR configuration and the presence of MQ, DB2, IMS, and CICS within these LPARs. No errors or missing data were encountered during the retrieval process.`,
+      text: `System Name: ${DEMO_SYSTEM}\n\nSummary\nLa información de topology recuperada muestra la configuración de LPAR y la presencia de MQ, DB2, IMS y CICS en estos LPAR. No se encontraron errores ni datos faltantes durante el proceso.`,
       attachments: [
         {
           kind: "topology",
           systemName: DEMO_SYSTEM,
           summary:
-            "There are a total of 2 LPARs. Out of these, 2 have MQ active, 2 have DB2 active, 1 has IMS active, and 2 have CICS active.",
+            "Hay un total de 2 LPAR. De estos, 2 tienen MQ activo, 2 tienen DB2 activo, 1 tiene IMS activo y 2 tienen CICS activo.",
           rows: DEMO_TOPOLOGY,
         } satisfies AssistantAttachment,
       ],
@@ -220,11 +240,11 @@ function buildAssistantReply(inputRaw: string, history: ChatMessage[]) {
     hasAny(input, ["critical events", "eventos críticos", "events between", "march 05", "march 06", "05 2025", "06 2025"])
   ) {
     return {
-      text: "These are 3 critical events from the system between March 05, 2025 and March 06, 2025.",
+      text: "Estos son 3 critical events del sistema entre March 05, 2025 y March 06, 2025.",
       attachments: [
         {
           kind: "critical_events",
-          title: "Critical events",
+          title: "critical events",
           rows: DEMO_CRITICAL_EVENTS,
         } satisfies AssistantAttachment,
       ],
@@ -234,13 +254,13 @@ function buildAssistantReply(inputRaw: string, history: ChatMessage[]) {
   // Summary for CICST11A / WLM
   if (hasAny(input, ["summary for", "wlm", "cicst11a", "goal attainment"])) {
     return {
-      text: "Summary of Workload Manager (WLM) goal attainment",
+      text: "Resumen de Workload Manager (WLM) goal attainment",
       attachments: [
         {
           kind: "wlm_summary",
           title: "WLM goal attainment",
           text:
-            "Service class NEWRTECH did not meet its goal, with a performance index set at None. The execution velocity goal was 500, but only 50% was achieved. Total delay percentage is 50%.",
+            "La Service class NEWRTECH no cumplió su goal, con un performance index en None. El execution velocity goal era 500, pero solo se logró 50%. El Total delay percentage es 50%.",
         } satisfies AssistantAttachment,
       ],
     };
@@ -258,11 +278,11 @@ function buildAssistantReply(inputRaw: string, history: ChatMessage[]) {
     ])
   ) {
     return {
-      text: "Found Incidents:",
+      text: "Incidents encontrados:",
       attachments: [
         {
           kind: "historical_incidents",
-          title: "Historical incidents (ServiceNow)",
+          title: "Incidents históricos (ServiceNow)",
           rows: DEMO_HISTORICAL_INCIDENTS,
         } satisfies AssistantAttachment,
       ],
@@ -274,16 +294,16 @@ function buildAssistantReply(inputRaw: string, history: ChatMessage[]) {
     const draft: IncidentDraft = {
       title: "Abnormal transaction_rate on CICS Region CICS3AAA",
       description:
-        "The service class WLMAISC did not meet its goal, with a performance index of 1.2. The execution velocity goal was 70%, but only 58.08% was achieved.",
+        "La Service class WLMAISC no cumplió su goal, con un performance index de 1.2. El execution velocity goal era 70%, pero solo se logró 58.08%.",
       urgency: "1 - High",
       impact: "1 - High",
       assignedTo: "***********",
     };
 
     return {
-      text: 'Would you like to create a ServiceNow incident? Please confirm by responding with a "Yes" or "No".',
+      text: '¿Quieres crear un ServiceNow incident? Por favor confirma respondiendo con "Yes" o "No".',
       attachments: [
-        { kind: "incident_form", title: "ServiceNow incident (draft)", draft } satisfies AssistantAttachment,
+        { kind: "incident_form", title: "ServiceNow incident (borrador)", draft } satisfies AssistantAttachment,
       ],
     };
   }
@@ -291,13 +311,14 @@ function buildAssistantReply(inputRaw: string, history: ChatMessage[]) {
   // Default fallback: guide user
   return {
     text:
-      "I can help you inspect IBM Z operational status via agents (demo).\n\nTry asking for topology, critical events between dates, a WLM summary, or historical incidents.",
+      "Puedo ayudarte a revisar el estado operativo de IBM Z a través de agents.\n\nPrueba pidiendo topology, critical events entre fechas, un WLM summary o historical incidents.",
     attachments: [],
   };
 }
 
 function MessageBubble({ msg, onQuickReply }: { msg: ChatMessage; onQuickReply: (text: string) => void }) {
   const isUser = msg.role === "user";
+  const timeLabel = formatChatTime(msg.at);
   return (
     <div className={cn("flex w-full", isUser ? "justify-end" : "justify-start")}>
       <div
@@ -318,9 +339,16 @@ function MessageBubble({ msg, onQuickReply }: { msg: ChatMessage; onQuickReply: 
           </div>
         ) : null}
 
-        <div className={cn("mt-2 text-[11px] opacity-70", isUser ? "text-primary-foreground/80" : "text-muted-foreground")}>
-          {new Date(msg.at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-        </div>
+        {timeLabel ? (
+          <div
+            className={cn(
+              "mt-2 text-[11px] opacity-70",
+              isUser ? "text-primary-foreground/80" : "text-muted-foreground",
+            )}
+          >
+            {timeLabel}
+          </div>
+        ) : null}
       </div>
     </div>
   );
@@ -398,7 +426,7 @@ function Attachment({
               ))}
             </tbody>
           </table>
-          <div className="mt-2 text-xs text-muted-foreground">Showing top 3 of 1381</div>
+          <div className="mt-2 text-xs text-muted-foreground">Mostrando top 3 de 1381</div>
         </CardContent>
       </Card>
     );
@@ -426,11 +454,11 @@ function Attachment({
             <thead>
               <tr className="border-b">
                 <th className="py-2 text-left text-xs text-muted-foreground">Incident ID</th>
-                <th className="py-2 text-left text-xs text-muted-foreground">Title</th>
-                <th className="py-2 text-left text-xs text-muted-foreground">Priority</th>
-                <th className="py-2 text-left text-xs text-muted-foreground">Status</th>
-                <th className="py-2 text-left text-xs text-muted-foreground">Description</th>
-                <th className="py-2 text-left text-xs text-muted-foreground">Resolution</th>
+                <th className="py-2 text-left text-xs text-muted-foreground">Título</th>
+                <th className="py-2 text-left text-xs text-muted-foreground">Prioridad</th>
+                <th className="py-2 text-left text-xs text-muted-foreground">Estado</th>
+                <th className="py-2 text-left text-xs text-muted-foreground">Descripción</th>
+                <th className="py-2 text-left text-xs text-muted-foreground">Resolución</th>
               </tr>
             </thead>
             <tbody>
@@ -449,7 +477,7 @@ function Attachment({
 
           <div className="mt-3 flex flex-wrap gap-2">
             <Button variant="outline" size="sm" onClick={() => onQuickReply("Create a ServiceNow incident")} type="button">
-              Create ServiceNow incident <CornerDownLeft className="ml-2 size-4" />
+              Crear ServiceNow incident <CornerDownLeft className="ml-2 size-4" />
             </Button>
           </div>
         </CardContent>
@@ -464,24 +492,24 @@ function Attachment({
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center justify-between gap-2">
             <span className="text-muted-foreground">{a.title}</span>
-            <Badge variant="secondary">AI</Badge>
+            <Badge variant="secondary">IA</Badge>
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-            <Field label="Title" value={d.title} />
-            <Field label="Assigned to" value={d.assignedTo} />
+            <Field label="Título" value={d.title} />
+            <Field label="Asignado a" value={d.assignedTo} />
             <Field label="Urgency" value={d.urgency} />
             <Field label="Impact" value={d.impact} />
           </div>
           <div className="rounded-lg border bg-muted/30 p-3 text-sm">
-            <div className="text-xs font-medium text-muted-foreground">Description</div>
+            <div className="text-xs font-medium text-muted-foreground">Descripción</div>
             <div className="mt-1 text-muted-foreground">{d.description}</div>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
             <Button onClick={() => onQuickReply("Yes")} type="button">
-              Yes, create incident <ArrowUpRight className="ml-2 size-4" />
+              Yes, crear Incident <ArrowUpRight className="ml-2 size-4" />
             </Button>
             <Button variant="outline" onClick={() => onQuickReply("No")} type="button">
               No
@@ -503,9 +531,9 @@ function Attachment({
         </CardHeader>
         <CardContent className="flex flex-wrap items-center justify-between gap-2">
           <div className="text-sm">
-            View Incident: <span className="font-semibold text-primary">{a.incidentId}</span>
+            Ver Incident: <span className="font-semibold text-primary">{a.incidentId}</span>
             <div className="mt-1 text-xs text-muted-foreground">
-              Assigned to: <span className="text-foreground">{a.assignedTo}</span>
+              Asignado a: <span className="text-foreground">{a.assignedTo}</span>
             </div>
           </div>
           <Button
@@ -514,7 +542,7 @@ function Attachment({
             onClick={() => onQuickReply(`Open ${a.incidentId}`)}
             type="button"
           >
-            Open <ArrowUpRight className="ml-1 size-4" />
+            Abrir <ArrowUpRight className="ml-1 size-4" />
           </Button>
         </CardContent>
       </Card>
@@ -535,15 +563,7 @@ function Field({ label, value }: { label: string; value: string }) {
 
 export function AssistantClient() {
   const [draft, setDraft] = React.useState("");
-  const [messages, setMessages] = React.useState<ChatMessage[]>(() => [
-    {
-      id: uid(),
-      role: "assistant",
-      at: nowIso(),
-      text: "watsonx Assistant for Z\nAsk me about your z/OS environment, alerts, and incidents.",
-      attachments: [],
-    },
-  ]);
+  const [messages, setMessages] = React.useState<ChatMessage[]>(() => INITIAL_MESSAGES);
 
   const bottomRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -595,16 +615,13 @@ export function AssistantClient() {
             </Badge>
           </div>
           <div className="mt-2 text-sm text-muted-foreground">
-            Conversational triage for IBM Z — topology, critical events, and incident creation.
+            Triage conversacional para IBM Z — topology, critical events y creación de Incident.
           </div>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
           <Badge variant="outline" className="gap-2">
             <Bot className="size-4" /> Routed agents
-          </Badge>
-          <Badge variant="outline" className="gap-2">
-            <CircleHelp className="size-4" /> Demo data
           </Badge>
         </div>
       </div>
@@ -641,7 +658,7 @@ export function AssistantClient() {
                     <textarea
                       value={draft}
                       onChange={(e) => setDraft(e.target.value)}
-                      placeholder="Type something…"
+                      placeholder="Escribe algo…"
                       className={cn(
                         "min-h-[44px] w-full resize-none rounded-xl border bg-background px-4 py-3 pr-12 text-sm outline-none",
                         "focus-visible:ring-2 focus-visible:ring-ring",
@@ -668,7 +685,7 @@ export function AssistantClient() {
                 </div>
 
                 <div className="text-center text-[11px] text-muted-foreground">
-                  Enter to send • Shift+Enter for newline • Flow based on the watsonx Assistant for Z video
+                  Enter para enviar • Shift+Enter para nueva línea • Flujo basado en el video de watsonx Assistant for Z
                 </div>
               </div>
             </div>
